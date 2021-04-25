@@ -19,7 +19,7 @@ public class Network {
     public String toString() {
         // System.out.println("toString() needs to be implemented!");
         StringBuilder sb = new StringBuilder();
-        this.neurons.forEach((n) -> sb.append(n.toString()));
+        this.neurons.forEach((n) -> sb.append(n.toString()).append('\n'));
         return sb.toString();
     }
 
@@ -92,15 +92,17 @@ public class Network {
             this.scaleToInput(input);
         }
 
+        // System.out.println("Forward Prop Input Layer Size: " + this.neuronOrder.get(0).size());
         for (Neuron n : this.neuronOrder.get(0)){
             n.forwardProp(input);
         }
 
         // Iterate over each layer and forward propagate
         for (int i = 1; i<this.neuronOrder.size(); i++){
-            this.neuronOrder.get(i).forEach((n) -> n.forwardProp());
+            this.neuronOrder.get(i).forEach(Neuron::forwardProp);
         }
 
+        // Outputs the values from the last row
         return this.neuronOrder.get(this.neuronOrder.size()-1).stream().filter((n) -> n.childCount() == 0).map((n)->n.getOutput()).mapToDouble(Double::doubleValue).toArray();
     }
 

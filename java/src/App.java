@@ -35,13 +35,22 @@ public class App {
 
         net.buildNeuronOrder();
 
-        System.out.println("Before Training:");
-        System.out.println("(0,0 -> 0): " + Arrays.toString(net.forwardProp(new double[] { 0.0, 0.0 })));
-        System.out.println("(0,1 -> 1): " + Arrays.toString(net.forwardProp(new double[] { 0.0, 1.0 })));
-        System.out.println("(1,0 -> 1): " + Arrays.toString(net.forwardProp(new double[] { 1.0, 0.0 })));
-        System.out.println("(1,1 -> 0): " + Arrays.toString(net.forwardProp(new double[] { 1.0, 1.0 })));
+        // System.out.println("Before Training:");
+        // System.out.println("(0,0 -> 0): " + Arrays.toString(net.forwardProp(new double[] { 0.0, 0.0 })));
+        // System.out.println("(0,1 -> 1): " + Arrays.toString(net.forwardProp(new double[] { 0.0, 1.0 })));
+        // System.out.println("(1,0 -> 1): " + Arrays.toString(net.forwardProp(new double[] { 1.0, 0.0 })));
+        // System.out.println("(1,1 -> 0): " + Arrays.toString(net.forwardProp(new double[] { 1.0, 1.0 })));
 
+        System.out.println("To String: \n" + net.toString());
+        net.forwardProp(new double[] { 0.0, 0.0 });
+        System.out.println("To String {0.0, 0.0}: \n" + net.toString());
 
+        net.forwardProp(new double[] { 1.0, 0.0 });
+        System.out.println("To String {1.0, 0.0}: \n" + net.toString());
+        
+        net.forwardProp(new double[] { 1.0, 1.0 });
+        System.out.println("To String {1.0, 1.0}: \n" + net.toString());
+        
         for (int i = 0; i < 1000; i++) {
             net.forwardProp(new double[] { 0.0, 0.0 });
             net.backwardProp(new double[] { 0.0 });
@@ -55,12 +64,26 @@ public class App {
             net.forwardProp(new double[] { 1.0, 1.0 });
             net.backwardProp(new double[] { 0.0 });
 
+            // System.out.println("Round: " + i);
+            // System.out.println("N1: " + n1.getOutput());
+            // System.out.println("N2: " + n2.getOutput());
+            // System.out.println("N3: " + n3.getOutput());
+            // System.out.println("N4: " + n4.getOutput());
+            // System.out.println("N5: " + n5.getOutput());
+            
         }
-
+        
         System.out.println("After Training:");
         System.out.println("(0,0 -> 0): " + Arrays.toString(net.forwardProp(new double[] { 0.0, 0.0 })));
         System.out.println("(0,1 -> 1): " + Arrays.toString(net.forwardProp(new double[] { 0.0, 1.0 })));
         System.out.println("(1,0 -> 1): " + Arrays.toString(net.forwardProp(new double[] { 1.0, 0.0 })));
         System.out.println("(1,1 -> 0): " + Arrays.toString(net.forwardProp(new double[] { 1.0, 1.0 })));
+        System.out.println("To String: \n" + net.toString());
+
+        // System.out.println("N1: " + n1.getOutput());
+        // System.out.println("N2: " + n2.getOutput());
+        // System.out.println("N3: " + n3.getOutput());
+        // System.out.println("N4: " + n4.getOutput());
+        // System.out.println("N5: " + n5.getOutput());
     }
 }

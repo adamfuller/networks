@@ -92,6 +92,7 @@ public class Neuron {
         map.put("id", this.id);
         map.put("depth", String.valueOf(this.depth));
         map.put("weights", Arrays.toString(this.weights));
+        map.put("output", String.valueOf(this.output));
         // map.put("parents", this.parents.toString());
         // map.put("children", this.children.toString());
         return map.toString();
@@ -210,21 +211,34 @@ public class Neuron {
     public double forwardProp(double[] input) {
 
         if (input == null) {
-            // System.out.println("NULL INPUT");
+            // System.out.println("NULL INPUT for neuron: " + this.id);
             // Overwrite the input using this neuron's parent outputs
             input = this.parents.stream().map((n) -> n.output).mapToDouble(Double::doubleValue).toArray();
+            // System.out.println(this.id + " Using Input: " + Arrays.toString(input));
+        } else {
+            // System.out.println(this.id + " Received input: " + Arrays.toString(input));
         }
         this.output = 0.0;
+        this.inputs = new double[input.length+1];
+        this.inputs[0] = 1.0;
+        System.arraycopy(input, 0, this.inputs, 1, input.length);
 
         // Don't adjust here anymore, use an external call to adjustForInput
         // this.adjustForInput(input);
-
+        // System.out.print(this.id + " output calculation: ");
         for (int i = 0; i < this.inputs.length; i++) {
             this.output += this.inputs[i] * this.weights[i];
+            // if (i > 0){
+            //     System.out.print(" + ");
+            // }
+            // System.out.print(this.inputs[i] + " * " + this.weights[i]);
         }
+        // System.out.println(" = " + this.output);
 
+        // System.out.println(this.id + " before Activation Function: " + this.output);
         // Apply the activation function to the output
         this.output = this.actFunc.apply(this.output);
+        // System.out.println(this.id + " after Activation Function: " + this.output);
 
         return this.output;
     }
@@ -266,6 +280,10 @@ public class Neuron {
         for (int i = 0; i < this.weights.length; i++) {
             this.weights[i] = this.weights[i] + this.weightAdj[i] * this.learningRate;
         }
+    }
+
+    public String getId() {
+        return this.id;
     }
 
 }
