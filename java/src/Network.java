@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Network {
     private ArrayList<Neuron> neurons;
@@ -23,6 +24,18 @@ public class Network {
         return sb.toString();
     }
 
+    /**
+     * Prints out the Layers and the associated neurons in them.
+     * Layer 0 is the input layer.
+     */
+    public void printNeuronOrder(){
+        System.out.println("Neuron Order:");
+        for (int i = 0; i<this.neuronOrder.size(); i++){
+            System.out.print(i + " : ");
+            System.out.println(this.neuronOrder.get(i).stream().map((n) -> n.getId()).collect(Collectors.joining(",")));
+        }
+    }
+
     public int size(){
         return this.neurons.size();
     }
@@ -43,6 +56,23 @@ public class Network {
         // Start with a new empty order
         this.neuronOrder = new ArrayList<>();
         this.neuronOrder.add(new ArrayList<>());
+
+        for (int i = 0; i<this.neurons.size(); i++){
+            for (Neuron n : this.neurons.get(i).getChildren()){
+                // If the child isn't present for some reason, add it, check that one's children as well
+                if (!this.neurons.contains(n)){
+                    System.out.println("Missing Neuron Found: " + n.getId());
+                    this.neurons.add(n);
+                }
+            }
+            for (Neuron n : this.neurons.get(i).getParents()){
+                // If the child isn't present for some reason, add it, check that one's children as well
+                if (!this.neurons.contains(n)){
+                    System.out.println("Missing Neuron Found: " + n.getId());
+                    this.neurons.add(n);
+                }
+            }
+        }
 
         int maxDepth = -1;
 
@@ -106,8 +136,13 @@ public class Network {
         return this.neuronOrder.get(this.neuronOrder.size()-1).stream().filter((n) -> n.childCount() == 0).map((n)->n.getOutput()).mapToDouble(Double::doubleValue).toArray();
     }
 
-    public void backwardProp(double[] expectedOutput) {
+    public void backwardProp(double[] expectedOutput) throws Exception {
         ArrayList<Neuron> outputLayer = this.neuronOrder.get(this.neuronOrder.size()-1);
+
+        if (expectedOutput.length > outputLayer.size()){
+            throw new Exception("Output Layer is not properly sized (" + outputLayer.size() +") for an output of size: " + expectedOutput.length);
+        }
+
         // Back propagate the output layer
         for (int i = 0; i<expectedOutput.length;i++){
             if (outputLayer.get(i).childCount() > 0){

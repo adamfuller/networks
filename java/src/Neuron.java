@@ -6,16 +6,16 @@ import java.util.function.Function;
 
 public class Neuron {
     private static double defaultLearningRate = 0.033;
-    // private static Function<Double, Double> sigmoid = (x) -> 1.0 / (1.0 + Math.exp(-x));
-    // private static Function<Double, Double> sigmoidDerivative = (x) -> {
-    //     double s = Neuron.sigmoid.apply(x);
-    //     return s * (1.0 - s);
-    // };
-    // private static Function<Double, Double> relu = (x) -> x > 0 ? x : 0.0;
-    // private static Function<Double, Double> reluDerivative = (x) -> x > 0 ? 1 : 0.0;
+    public static Function<Double, Double> sigmoid = (x) -> 1.0 / (1.0 + Math.exp(-x));
+    public static Function<Double, Double> sigmoidDerivative = (x) -> {
+        double s = Neuron.sigmoid.apply(x);
+        return s * (1.0 - s);
+    };
+    public static Function<Double, Double> relu = (x) -> x > 0 ? x : 0.0;
+    public static Function<Double, Double> reluDerivative = (x) -> x > 0 ? 1 : 0.0;
 
-    private static Function<Double, Double> leakyRelu = (x) -> x > 0.0 ? x : (0.1 * x);
-    private static Function<Double, Double> leakyReluDerivative = (x) -> x > 0.0 ? 1.0 : 0.1;
+    public static Function<Double, Double> leakyRelu = (x) -> x > 0.0 ? x : (0.1 * x);
+    public static Function<Double, Double> leakyReluDerivative = (x) -> x > 0.0 ? 1.0 : 0.1;
 
     // Computational parameters
     private double[] inputs, weights, weightAdj;
@@ -113,6 +113,37 @@ public class Neuron {
         parent.connectChild(this, true);
         return true;
     }
+    
+    public boolean connectNeighbor(Neuron neighbor) {
+        // Check if parents contains the input
+        for (Neuron n : this.parents){
+            if (n == neighbor){
+                System.out.println("Attempted to connect parent: " + n.getId());
+                return false;
+            }
+        }
+
+        for (Neuron n : this.children){
+            if (n == neighbor){
+                System.out.println("Attempted to connect child: " + n.getId());
+                return false;
+            }
+        }
+
+        if (this.isInput){
+            neighbor.isInput = true;
+        }
+
+        for (Neuron n : this.parents){
+            n.connectChild(neighbor);
+        }
+
+        for (Neuron n : this.children){
+            n.connectParent(neighbor);
+        }
+
+        return true;
+    }
 
     public boolean connectChild(Neuron child, boolean isFromParent) {
         // Check if children contains the input
@@ -185,7 +216,7 @@ public class Neuron {
         if (this.weights.length == this.inputs.length)
             return;
 
-        System.out.println(this.id + ": " + Arrays.toString(this.weights));
+        System.out.println("Adjusting for Input (" +  this.id + ") existing weights: " + Arrays.toString(this.weights));
 
         // if (this.weights.length > 0)
         //     System.out.println("New input did not match previous input size");
@@ -284,6 +315,14 @@ public class Neuron {
 
     public String getId() {
         return this.id;
+    }
+
+    public ArrayList<Neuron> getChildren(){
+        return new ArrayList<>(this.children);
+    }
+
+    public ArrayList<Neuron> getParents(){
+        return new ArrayList<>(this.parents);
     }
 
 }
