@@ -19,8 +19,10 @@ Windows Power Shell:
 ```
 # Create a build directory parallel to the src directory
 mkdir build
+
 # Build the code into the build directory
 javac -d build ./src/*.java
+
 # Execute the code
 java -cp build App
 
